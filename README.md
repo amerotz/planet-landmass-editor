@@ -25,7 +25,7 @@ This is the map we're starting with. It has been generated with [gc-planet-map-g
 
 Now we change the sea level to 8600 m above the lowest point (full height range is 0 - 20,000 m, height above sea level goes 0 - 10,000 m).
 
-![Sea Level](/images/sea%20level.PNG)
+![Sea Level](/images/sea%20level.png)
 
 Let's say the tallest mountain is roughly the same height as Everest and set the maximum height to 8823 m. Also, let's pretend the coastline is entirely made of 1 km high cliffs from which you can face the void between you and the ocean (minimum height above sea level = 1176 m).
 
@@ -62,5 +62,7 @@ Better. Wonder what it looks like inverted?
 It looked better before. Let's invert it again and save the map.
 
 ## Final result
+
+Here's the exported map. The sea is transparent, that's why you can see through the image.
 
 ![Final result](/images/final.png)
