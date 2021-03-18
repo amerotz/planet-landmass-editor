@@ -21,7 +21,7 @@ final int H_STEP = (int) (255*500/(float)(DIFF));
 final int MIN_BSIZE = 10;
 final int MAX_BSIZE = 100;
 final float BLR_STEP = 0.1;
-final int MAX_UNDO = 10;
+final int MAX_UNDO = 20;
 
 PImage img;
 float H[], B[];
@@ -35,8 +35,6 @@ float blurAmt = 0;
 int min = 0;
 int max = 255;
 int brushSize = 10;
-int lookingAt = 0;
-int maxMapH = 0;
 
 boolean borders = false;
 boolean editMode = false;
@@ -74,23 +72,23 @@ void keyPressed(){
     if(blurAmt > 1) blurAmt = 1;
     changedBlur = true;
     break; 
-  case '/': 
+  case '*': 
     max += H_STEP;
     if(max > 255) max = 255;
     break;
-  case '8': 
+  case '9': 
     max -= H_STEP;
     if(max <= min) max = min + 1;
     break;
-  case '*': 
+  case '/': 
     min += H_STEP;
     if(min > max) min = max;
     break;
-  case '9': 
+  case '8': 
     min -= H_STEP;
     if(min < 0) min = 0;
     break;
-  case 'b': 
+  case 'c': 
     borders = !borders;
     break;  
   case 'e':
@@ -113,8 +111,10 @@ void keyPressed(){
     break;
   case 's':
     selectOutput("Export map as png...", "saveSelected");
+    break;
   case 'i':
     invert = !invert;
+    break;
   }
   key = '\\';
   changeMade = true;
@@ -134,15 +134,15 @@ void saveSelected(File f){
 }
 
 void fileSelected(File f){
-  img = loadImage("25000 iterations.png");
-  //img = loadImage(f.getAbsolutePath());
+  //img = loadImage("25000 iterations.png");
+  img = loadImage(f.getAbsolutePath());
   img.loadPixels();
 }
 
 void settings(){
+  selectInput("Select source image...", "fileSelected");
   size(MAP_W+GUI_W, HEIGHT);
-  //selectInput("Select source image...", "fileSelected");
-  fileSelected(null);
+  //fileSelected(null);
 }
 
 void setup(){
@@ -238,11 +238,10 @@ void drawMap(){
           int h = (int)(constrain(tmpH, 0, 1) * DIFF) + MINH;
           int index = index(x, y);
           if(h > thr){
-            if(h > maxMapH) maxMapH = h;
-            int newH = (int)map(h, thr, maxMapH, min, max);
+            int newH = (int)map(h, thr, MAXH, min, max);
             map.pixels[index] = color(newH);
           } else if(borders && abs(h-thr) <= THR_STEP) map.pixels[index] = color(255, 0, 0);
-          else map.pixels[index] = color(0);
+          else map.pixels[index] = color(0, 0);
       }
     }
     map.updatePixels();
@@ -260,10 +259,11 @@ void modifyTerrain(int x_, int y_, int type){
       if(dist <= brushSize/2){
         float perc = pow(1 - dist/brushSize, 3);
         int index = index((x + MAP_W)%MAP_W, y);
-        if(index == -1) break;
-        B[index] += type == CENTER ? -B[index]*perc : 0.01 * dir * perc;
-        if(B[index] > 1 - H[index]) B[index] = 1 - H[index];
-        else if(B[index] < -H[index]) B[index] = -H[index];
+        if(index != -1){
+          B[index] += type == CENTER ? -B[index]*perc : 0.01 * dir * perc;
+          if(B[index] > 1 - H[index]) B[index] = 1 - H[index];
+          else if(B[index] < -H[index]) B[index] = -H[index];
+        }
       }
     }
   }
@@ -298,24 +298,25 @@ void gui(){
   gui.textAlign(CENTER);
   int c = 8;
   int k = 14;
+  int i = 2;
   guiText("Planet Landmass Editor", 22, RED, GUI_W/2, GUI_H/k);
   
   gui.textAlign(LEFT);
-  guiText("Sea level (4 - 6): " + thr + " m", 15, 0, GUI_W/c, 2*GUI_H/k);
-  guiText("Min height above sea level (9 - *): " + (int)((MAXH - thr)*min/255.0) + " m", 15, 0, GUI_W/c, 3*GUI_H/k);
-  guiText("Max height above sea level (8 - /): " + (int)((MAXH - thr)*max/255.0) + " m", 15, 0, GUI_W/c, 4*GUI_H/k);
-  guiText("Blur amount (2 - 5): " + blurAmt, 15, 0, GUI_W/c, 5*GUI_H/k);
-  guiText("Showing coastline (b): " + borders, 15, 0, GUI_W/c, 6*GUI_H/k);
+  guiText("Sea level (4 - 6): " + thr + " m", 15, 0, GUI_W/c, i++*GUI_H/k);
+  guiText("Min height above sea level (8 - /): " + (int)((MAXH/2)*min/255.0) + " m", 15, 0, GUI_W/c, i++*GUI_H/k);
+  guiText("Max height above sea level (9 - *): " + (int)((MAXH/2)*max/255.0) + " m", 15, 0, GUI_W/c, i++*GUI_H/k);
+  guiText("Blur amount (2 - 5): " + blurAmt, 15, 0, GUI_W/c, i++*GUI_H/k);
+  guiText("Showing coastline (c): " + borders, 15, 0, GUI_W/c, i++*GUI_H/k);
   guiText("Edit mode (e): " + editMode +
           (editMode ? ", brush size: " + brushSize : ""),
-          15, 0, GUI_W/c, 7*GUI_H/k);
-  guiText("Inverting (i): " + invert, 15, 0, GUI_W/c, 8*GUI_H/k);
-  guiText("Horizontal shifting (1 - 3): " + shiftW, 15, 0, GUI_W/c, 9*GUI_H/k);
+          15, 0, GUI_W/c, i++*GUI_H/k);
+  guiText("Inverting (i): " + invert, 15, 0, GUI_W/c, i++*GUI_H/k);
+  guiText("Horizontal shifting (1 - 3): " + shiftW, 15, 0, GUI_W/c, i++*GUI_H/k);
   
-  guiText("Press 's' to save", 15, RED, GUI_W/c, 10*GUI_H/k);
-  guiText("left/right click to increase/decrease height", 15, RED, GUI_W/c, 11*GUI_H/k);
-  guiText("middle click to erase", 15, RED, GUI_W/c, 12*GUI_H/k);
-  guiText("u/r to undo/redo", 15, RED, GUI_W/c, 13*GUI_H/k);
+  guiText("Press 's' to save", 15, RED, GUI_W/c, i++*GUI_H/k);
+  guiText("left/right click to increase/decrease height", 15, RED, GUI_W/c, i++*GUI_H/k);
+  guiText("middle click to erase", 15, RED, GUI_W/c, i++*GUI_H/k);
+  guiText("u/r to undo/redo", 15, RED, GUI_W/c, i++*GUI_H/k);
   gui.textAlign(CENTER);
   guiText("Copyright (C) 2021  Marco Amerotti", 10, 0, GUI_W/2, 490);
   
@@ -328,26 +329,3 @@ void guiText(String s, int size, color c, int x, int y){
   gui.textSize(size);
   gui.text(s, x, y);
 }
-/*
-PVector rotateV(float x, float y, float z, float xth, float yth, float zth){
-  if(xth != 0){
-    float sin = sin(xth);
-    float cos = cos(xth);
-    y = cos*y - sin*z;
-    z = sin*y + cos*z;
-  }
-  if(yth != 0){
-    float sin = sin(yth);
-    float cos = cos(yth);
-    x = cos*x + sin*z;
-    z = -sin*x + cos*z;
-  }
-  if(zth != 0){
-    float sin = sin(zth);
-    float cos = cos(zth);
-    x = cos*x - sin*y;
-    y = sin*x + cos*y;
-  }
-  return new PVector(x, y, z);
-}
-*/
