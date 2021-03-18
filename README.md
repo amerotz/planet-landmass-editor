@@ -21,15 +21,15 @@ This program is written in [Processing 3.5.4](https://www.processing.org/). You 
 # Walkthrough
 This is the map we're starting with. It has been generated with [gc-planet-map-generator](https://github.com/amerotz/gc-planet-map-generator) (25,000 iterations).
 
-![25,000 iterations](/images/25000 iterations.png)
+![25,000 iterations](/images/25000%20iterations.png)
 
 Now we change the sea level to 8600 m above the lowest point (full height range is 0 - 20,000 m, height above sea level goes 0 - 10,000 m).
 
-![Sea Level](/images/sea level.PNG)
+![Sea Level](/images/sea%20level.PNG)
 
 Let's say the tallest mountain is roughly the same height as Everest and set the maximum height to 8823 m. Also, let's pretend the coastline is entirely made of 1 km high cliffs from which you can face the void between you and the ocean (minimum height above sea level = 1176 m).
 
-![Height range](/images/height range.PNG)
+![Height range](/images/height%20range.PNG)
 
 Let's blur the map to smooth things out.
 
