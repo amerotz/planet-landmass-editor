@@ -21,34 +21,46 @@ This program is written in [Processing 3.5.4](https://www.processing.org/). You 
 # Walkthrough
 This is the map we're starting with. It has been generated with [gc-planet-map-generator](https://github.com/amerotz/gc-planet-map-generator) (25,000 iterations).
 
-![25,000 iterations](/images/25000 iterations)
+![25,000 iterations](/images/25000 iterations.png)
 
 Now we change the sea level to 8600 m above the lowest point (full height range is 0 - 20,000 m, height above sea level goes 0 - 10,000 m).
 
-![Sea Level](/images/sea level)
+![Sea Level](/images/sea level.PNG)
 
 Let's say the tallest mountain is roughly the same height as Everest and set the maximum height to 8823 m. Also, let's pretend the coastline is entirely made of 1 km high cliffs from which you can face the void between you and the ocean (minimum height above sea level = 1176 m).
 
-![Height range](/images/height range)
+![Height range](/images/height range.PNG)
 
 Let's blur the map to smooth things out.
 
-![Blur](/images/blur)
+![Blur](/images/blur.PNG)
 
 The coastline is hard to distinguish. We can highlight it.
 
-![Coastline highlighting](/images/coastline)
+![Coastline highlighting](/images/coastline.PNG)
 
 Wouldn't it be nice if that ocean was right in the center of the map? Let's shift it a bit.
 
+![Shifting](/images/shifting.PNG)
+
 What about a small island in that ocean? We can switch to edit mode!
+
+![Editing 1](/images/edit.PNG)
 
 Also, there's too much land on the left. We can draw a little lake.
 
+![Editing 2](/images/edit2.PNG)
+
 Don't like the shape? Just undo it.
 
+![Undo](/images/undo.PNG)
+
 Better. Wonder what it looks like inverted?
+
+![Inverted](/images/inverted.PNG)
 
 It looked better before. Let's invert it again and save the map.
 
 ## Final result
+
+![Final result](/images/final.png)
